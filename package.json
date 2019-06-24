@@ -1,0 +1,24 @@
+{
+  "name": "appointment_booking_alerter",
+  "version": "1.0.0",
+  "description": "Simple web automation script to send email alerts when appointments are available for booking",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "cheerio",
+    "nodejs",
+    "axios",
+    "nodemailer"
+  ],
+  "author": "Dominic Idagu",
+  "license": "ISC",
+  "devDependencies": {},
+  "dependencies": {
+    "axios": "^0.19.0",
+    "cheerio": "^1.0.0-rc.3",
+    "dotenv": "^8.0.0",
+    "nodemailer": "^6.2.1"
+  }
+}
