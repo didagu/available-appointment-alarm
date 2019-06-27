@@ -21,7 +21,8 @@ exports.sendMail = (subject, text) => {
         if (error) {
             console.log(error);
         } else {
-            console.log('Email sent: ' + info.response);
+            var now = new Date.now()
+            console.log(`Email sent (${now.toUTCString()}): ${info.response}`);
         }
     });
 }
