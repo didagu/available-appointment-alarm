@@ -4,15 +4,12 @@ const cheerio = require('cheerio');
 const mailer = require('./utils/mailer');
 
 const base_url = 'https://tempus-termine.com/termine/index.php'
-const full_url = base_url + '?anr=29&standort=auslaender&anwendung=10&sna=Td5ed5c92739b0ab48fa9f6cf3458e34d&action=open&page=tagesauswahl&tasks=1978&kuerzel=antrag&schlangen=240&standortrowid=190&standortanzahl=1';
+const full_url = process.env.APPOINTMENT_URL || base_url + '?anr=29&standort=auslaender&anwendung=10&sna=Td5ed5c92739b0ab48fa9f6cf3458e34d&action=open&page=tagesauswahl&tasks=1978&kuerzel=antrag&schlangen=240&standortrowid=190&standortanzahl=1';
 
-const delay = ms => {
-    return new Promise(resolve => {
-        setTimeout(() => {
-            resolve();
-        }, ms);
-    });
-};
+const wanted_months = (process.env.WANTED_MONTHS || '6,7')
+    .split(',')
+    .map(m => parseInt(m, 10) - 1);
+const notified = new Set();
 
 setInterval(() => {
     axios.get(full_url)
@@ -24,8 +21,9 @@ setInterval(() => {
                 var partial_url = element.children[0].attribs.href;
                 var final_url = new URL(base_url + partial_url);
                 var appointment_date = new Date(final_url.searchParams.get('datum'));
-                var month = appointment_date.getMonth();
-                if (month === 5 || month === 6 ) {
+                var key = final_url.searchParams.get('datum');
+                if (wanted_months.includes(appointment_date.getMonth()) && !notified.has(key)) {
+                    notified.add(key);
                     email_text += `${appointment_date.toUTCString()} : ${final_url}\r\n`;
                 }
             })
@@ -38,5 +36,5 @@ setInterval(() => {
         })
         .catch(error => {
             console.log("error", error)
-        });;
+        });
 }, 120000);
